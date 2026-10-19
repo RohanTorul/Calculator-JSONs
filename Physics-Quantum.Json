@@ -1,0 +1,870 @@
+{
+  "name": "Quantum mechanics pack",
+  "tools": [
+    {
+      "id": "photon-energy",
+      "name": "Photon energy from wavelength",
+      "description": "Energy, frequency and momentum of a photon from its wavelength.",
+      "inputs": [
+        { "key": "lambda", "label": "Wavelength", "unit": "nm", "kind": "L", "default": 500 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "6.62607015e-34*2.99792458e8/(lambda*1e-9)" }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "J", "kind": "any", "formula": "E" },
+        { "label": "Energy", "unit": "eV", "kind": "any", "formula": "E/1.602176634e-19" },
+        { "label": "Frequency", "unit": "THz", "kind": "any", "formula": "2.99792458e8/(lambda*1e-9)/1e12" }
+      ]
+    },
+    {
+      "id": "photon-frequency",
+      "name": "Photon energy from frequency",
+      "description": "Energy and wavelength of a photon from its frequency.",
+      "inputs": [
+        { "key": "f", "label": "Frequency", "unit": "THz", "kind": "any", "default": 600 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "6.62607015e-34*f*1e12" }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "J", "kind": "any", "formula": "E" },
+        { "label": "Energy", "unit": "eV", "kind": "any", "formula": "E/1.602176634e-19" },
+        { "label": "Wavelength", "unit": "nm", "kind": "L", "formula": "2.99792458e8/(f*1e12)*1e9" }
+      ]
+    },
+    {
+      "id": "photon-momentum",
+      "name": "Photon momentum",
+      "description": "Momentum of a photon from its wavelength.",
+      "inputs": [
+        { "key": "lambda", "label": "Wavelength", "unit": "nm", "kind": "L", "default": 500 }
+      ],
+      "vars": [
+        { "name": "p", "formula": "6.62607015e-34/(lambda*1e-9)" }
+      ],
+      "outputs": [
+        { "label": "Momentum", "unit": "kg·m/s", "kind": "any", "formula": "p" },
+        { "label": "Momentum", "unit": "eV/c", "kind": "any", "formula": "p*2.99792458e8/1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "photon-flux",
+      "name": "Photon flux from optical power",
+      "description": "Number of photons per second for a given optical power and wavelength.",
+      "inputs": [
+        { "key": "P", "label": "Optical power", "unit": "W", "kind": "any", "default": 0.001 },
+        { "key": "lambda", "label": "Wavelength", "unit": "nm", "kind": "L", "default": 500 }
+      ],
+      "vars": [
+        { "name": "Eph", "formula": "6.62607015e-34*2.99792458e8/(lambda*1e-9)" }
+      ],
+      "outputs": [
+        { "label": "Photon rate", "unit": "photons/s", "kind": "any", "formula": "P/Eph" },
+        { "label": "Photon energy", "unit": "eV", "kind": "any", "formula": "Eph/1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "photoelectric-effect",
+      "name": "Photoelectric effect",
+      "description": "Maximum kinetic energy, stopping voltage and threshold wavelength for a metal.",
+      "inputs": [
+        { "key": "phi", "label": "Work function", "unit": "eV", "kind": "any", "default": 4.7 },
+        { "key": "lambda", "label": "Incident wavelength", "unit": "nm", "kind": "L", "default": 400 }
+      ],
+      "vars": [
+        { "name": "Eph", "formula": "6.62607015e-34*2.99792458e8/(lambda*1e-9)/1.602176634e-19" },
+        { "name": "Kmax", "formula": "Eph-phi" }
+      ],
+      "outputs": [
+        { "label": "Photon energy", "unit": "eV", "kind": "any", "formula": "Eph" },
+        { "label": "Max kinetic energy", "unit": "eV", "kind": "any", "formula": "Kmax" },
+        { "label": "Stopping voltage", "unit": "V", "kind": "any", "formula": "Kmax" },
+        { "label": "Threshold wavelength", "unit": "nm", "kind": "L", "formula": "6.62607015e-34*2.99792458e8/(phi*1.602176634e-19)*1e9" }
+      ]
+    },
+    {
+      "id": "compton-scattering",
+      "name": "Compton scattering",
+      "description": "Compton wavelength shift and scattered photon wavelength.",
+      "inputs": [
+        { "key": "lambda", "label": "Incident wavelength", "unit": "pm", "kind": "L", "default": 100 },
+        { "key": "theta", "label": "Scattering angle", "unit": "°", "kind": "any", "default": 90 }
+      ],
+      "vars": [
+        { "name": "shift", "formula": "6.62607015e-34/(9.1093837015e-31*2.99792458e8)*(1-cos(theta*pi/180))" }
+      ],
+      "outputs": [
+        { "label": "Wavelength shift", "unit": "pm", "kind": "L", "formula": "shift*1e12" },
+        { "label": "Scattered wavelength", "unit": "pm", "kind": "L", "formula": "lambda+shift*1e12" },
+        { "label": "Electron kinetic energy", "unit": "keV", "kind": "any", "formula": "6.62607015e-34*2.99792458e8*(1/(lambda*1e-12)-1/((lambda+shift*1e12)*1e-12))/1.602176634e-19/1e3" }
+      ]
+    },
+    {
+      "id": "debroglie-wavelength",
+      "name": "de Broglie wavelength",
+      "description": "Matter wavelength for a particle with mass and velocity.",
+      "inputs": [
+        { "key": "m", "label": "Mass", "unit": "kg", "kind": "M", "default": 9.1093837015e-31 },
+        { "key": "v", "label": "Velocity", "unit": "m/s", "kind": "any", "default": 1000000 }
+      ],
+      "vars": [
+        { "name": "lambda", "formula": "6.62607015e-34/(m*v)" }
+      ],
+      "outputs": [
+        { "label": "Wavelength", "unit": "pm", "kind": "L", "formula": "lambda*1e12" },
+        { "label": "Wavelength", "unit": "nm", "kind": "L", "formula": "lambda*1e9" },
+        { "label": "Momentum", "unit": "kg·m/s", "kind": "any", "formula": "m*v" }
+      ]
+    },
+    {
+      "id": "debroglie-kinetic",
+      "name": "de Broglie wavelength from kinetic energy",
+      "description": "Non-relativistic matter wavelength from kinetic energy.",
+      "inputs": [
+        { "key": "K", "label": "Kinetic energy", "unit": "eV", "kind": "any", "default": 100 },
+        { "key": "m", "label": "Mass", "unit": "kg", "kind": "M", "default": 9.1093837015e-31 }
+      ],
+      "vars": [
+        { "name": "p", "formula": "sqrt(2*m*K*1.602176634e-19)" }
+      ],
+      "outputs": [
+        { "label": "Wavelength", "unit": "pm", "kind": "L", "formula": "6.62607015e-34/p*1e12" },
+        { "label": "Momentum", "unit": "kg·m/s", "kind": "any", "formula": "p" }
+      ]
+    },
+    {
+      "id": "group-velocity",
+      "name": "Group velocity from kinetic energy",
+      "description": "Non-relativistic group velocity of a matter wave.",
+      "inputs": [
+        { "key": "K", "label": "Kinetic energy", "unit": "eV", "kind": "any", "default": 100 },
+        { "key": "m", "label": "Mass", "unit": "kg", "kind": "M", "default": 9.1093837015e-31 }
+      ],
+      "outputs": [
+        { "label": "Group velocity", "unit": "m/s", "kind": "any", "formula": "sqrt(2*K*1.602176634e-19/m)" },
+        { "label": "Fraction of c", "unit": "c", "kind": "any", "formula": "sqrt(2*K*1.602176634e-19/m)/2.99792458e8" }
+      ]
+    },
+    {
+      "id": "uncertainty-position",
+      "name": "Heisenberg position-momentum uncertainty",
+      "description": "Minimum momentum and velocity uncertainty for a position uncertainty.",
+      "inputs": [
+        { "key": "dx", "label": "Position uncertainty", "unit": "nm", "kind": "L", "default": 1 }
+      ],
+      "vars": [
+        { "name": "dp", "formula": "1.054571817e-34/(2*dx*1e-9)" }
+      ],
+      "outputs": [
+        { "label": "Momentum uncertainty", "unit": "kg·m/s", "kind": "any", "formula": "dp" },
+        { "label": "Momentum uncertainty", "unit": "eV/c", "kind": "any", "formula": "dp*2.99792458e8/1.602176634e-19" },
+        { "label": "Electron velocity uncertainty", "unit": "m/s", "kind": "any", "formula": "dp/9.1093837015e-31" }
+      ]
+    },
+    {
+      "id": "uncertainty-energy",
+      "name": "Heisenberg energy-time uncertainty",
+      "description": "Minimum energy uncertainty for a lifetime or time interval.",
+      "inputs": [
+        { "key": "dt", "label": "Time interval", "unit": "fs", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "dE", "formula": "1.054571817e-34/(2*dt*1e-15)" }
+      ],
+      "outputs": [
+        { "label": "Energy uncertainty", "unit": "J", "kind": "any", "formula": "dE" },
+        { "label": "Energy uncertainty", "unit": "eV", "kind": "any", "formula": "dE/1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "bohr-radius",
+      "name": "Bohr radius of hydrogen level n",
+      "description": "Bohr model radius for principal quantum number n.",
+      "inputs": [
+        { "key": "n", "label": "Principal quantum number n", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Radius", "unit": "pm", "kind": "L", "formula": "5.29177210903e-11*n^2*1e12" }
+      ]
+    },
+    {
+      "id": "bohr-velocity",
+      "name": "Bohr model electron velocity",
+      "description": "Electron speed in the Bohr model for principal quantum number n.",
+      "inputs": [
+        { "key": "n", "label": "Principal quantum number n", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Velocity", "unit": "m/s", "kind": "any", "formula": "2.18769126364e6/n" },
+        { "label": "Fraction of c", "unit": "c", "kind": "any", "formula": "2.18769126364e6/n/2.99792458e8" }
+      ]
+    },
+    {
+      "id": "bohr-energy",
+      "name": "Bohr model energy level",
+      "description": "Hydrogen energy level for principal quantum number n.",
+      "inputs": [
+        { "key": "n", "label": "Principal quantum number n", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "-13.605693122994/n^2" }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "eV", "kind": "any", "formula": "E" },
+        { "label": "Energy", "unit": "J", "kind": "any", "formula": "E*1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "hydrogen-transition",
+      "name": "Hydrogen transition",
+      "description": "Photon energy and wavelength for a transition between hydrogen levels.",
+      "inputs": [
+        { "key": "n1", "label": "Lower level n1", "unit": "1", "kind": "any", "default": 2 },
+        { "key": "n2", "label": "Upper level n2", "unit": "1", "kind": "any", "default": 3 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "13.605693122994*(1/n1^2-1/n2^2)" }
+      ],
+      "outputs": [
+        { "label": "Photon energy", "unit": "eV", "kind": "any", "formula": "E" },
+        { "label": "Wavelength", "unit": "nm", "kind": "L", "formula": "6.62607015e-34*2.99792458e8/(E*1.602176634e-19)*1e9" },
+        { "label": "Frequency", "unit": "THz", "kind": "any", "formula": "E*1.602176634e-19/6.62607015e-34/1e12" }
+      ]
+    },
+    {
+      "id": "particle-box-energy",
+      "name": "Particle in a 1D box energy",
+      "description": "Energy level of a particle in an infinite square well.",
+      "inputs": [
+        { "key": "L", "label": "Well width", "unit": "nm", "kind": "L", "default": 1 },
+        { "key": "n", "label": "Level n", "unit": "1", "kind": "any", "default": 1 },
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "n^2*6.62607015e-34^2/(8*mEff*9.1093837015e-31*(L*1e-9)^2)" }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "J", "kind": "any", "formula": "E" },
+        { "label": "Energy", "unit": "eV", "kind": "any", "formula": "E/1.602176634e-19" },
+        { "label": "Momentum magnitude", "unit": "kg·m/s", "kind": "any", "formula": "n*6.62607015e-34/(2*L*1e-9)" }
+      ]
+    },
+    {
+      "id": "particle-box-transition",
+      "name": "Particle in a box transition",
+      "description": "Photon energy and wavelength for a transition in an infinite square well.",
+      "inputs": [
+        { "key": "L", "label": "Well width", "unit": "nm", "kind": "L", "default": 1 },
+        { "key": "n1", "label": "Lower level n1", "unit": "1", "kind": "any", "default": 1 },
+        { "key": "n2", "label": "Upper level n2", "unit": "1", "kind": "any", "default": 2 },
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "dE", "formula": "(n2^2-n1^2)*6.62607015e-34^2/(8*mEff*9.1093837015e-31*(L*1e-9)^2)/1.602176634e-19" }
+      ],
+      "outputs": [
+        { "label": "Transition energy", "unit": "eV", "kind": "any", "formula": "dE" },
+        { "label": "Photon wavelength", "unit": "nm", "kind": "L", "formula": "6.62607015e-34*2.99792458e8/(dE*1.602176634e-19)*1e9" }
+      ]
+    },
+    {
+      "id": "harmonic-oscillator-energy",
+      "name": "Quantum harmonic oscillator energy",
+      "description": "Energy of level n for angular frequency omega.",
+      "inputs": [
+        { "key": "omega", "label": "Angular frequency", "unit": "rad/s", "kind": "any", "default": 1e15 },
+        { "key": "n", "label": "Level n", "unit": "1", "kind": "any", "default": 0 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "1.054571817e-34*omega*(n+0.5)" }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "J", "kind": "any", "formula": "E" },
+        { "label": "Energy", "unit": "eV", "kind": "any", "formula": "E/1.602176634e-19" },
+        { "label": "Zero-point energy", "unit": "eV", "kind": "any", "formula": "1.054571817e-34*omega*0.5/1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "harmonic-oscillator-frequency",
+      "name": "Harmonic oscillator from spring constant",
+      "description": "Angular frequency and level spacing for mass-spring oscillator.",
+      "inputs": [
+        { "key": "k", "label": "Spring constant", "unit": "N/m", "kind": "any", "default": 1 },
+        { "key": "m", "label": "Mass", "unit": "kg", "kind": "M", "default": 9.1093837015e-31 }
+      ],
+      "vars": [
+        { "name": "omega", "formula": "sqrt(k/m)" }
+      ],
+      "outputs": [
+        { "label": "Angular frequency", "unit": "rad/s", "kind": "any", "formula": "omega" },
+        { "label": "Energy spacing", "unit": "eV", "kind": "any", "formula": "1.054571817e-34*omega/1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "tunneling-rectangular",
+      "name": "Rectangular barrier tunneling (WKB approximation)",
+      "description": "Approximate transmission through a rectangular barrier for E < V.",
+      "inputs": [
+        { "key": "V", "label": "Barrier height", "unit": "eV", "kind": "any", "default": 5 },
+        { "key": "E", "label": "Particle energy", "unit": "eV", "kind": "any", "default": 1 },
+        { "key": "L", "label": "Barrier width", "unit": "nm", "kind": "L", "default": 1 },
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "kappa", "formula": "sqrt(2*mEff*9.1093837015e-31*(V-E)*1.602176634e-19)/1.054571817e-34" }
+      ],
+      "outputs": [
+        { "label": "Decay constant", "unit": "1/m", "kind": "any", "formula": "kappa" },
+        { "label": "Transmission", "unit": "1", "kind": "any", "formula": "exp(-2*kappa*L*1e-9)" },
+        { "label": "Transmission", "unit": "%", "kind": "any", "formula": "exp(-2*kappa*L*1e-9)*100" }
+      ]
+    },
+    {
+      "id": "finite-barrier-transmission",
+      "name": "Exact rectangular barrier transmission",
+      "description": "Exact transmission for a rectangular barrier with E < V.",
+      "inputs": [
+        { "key": "V", "label": "Barrier height", "unit": "eV", "kind": "any", "default": 5 },
+        { "key": "E", "label": "Particle energy", "unit": "eV", "kind": "any", "default": 1 },
+        { "key": "L", "label": "Barrier width", "unit": "nm", "kind": "L", "default": 1 },
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "kappa", "formula": "sqrt(2*mEff*9.1093837015e-31*(V-E)*1.602176634e-19)/1.054571817e-34" },
+        { "name": "T", "formula": "1/(1+V^2/(4*E*(V-E))*sinh(kappa*L*1e-9)^2)" }
+      ],
+      "outputs": [
+        { "label": "Transmission", "unit": "1", "kind": "any", "formula": "T" },
+        { "label": "Transmission", "unit": "%", "kind": "any", "formula": "T*100" }
+      ]
+    },
+    {
+      "id": "angular-momentum-magnitude",
+      "name": "Orbital angular momentum magnitude",
+      "description": "Magnitude of orbital angular momentum for quantum number l.",
+      "inputs": [
+        { "key": "l", "label": "Orbital quantum number l", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "L", "formula": "sqrt(l*(l+1))" }
+      ],
+      "outputs": [
+        { "label": "L in units of ħ", "unit": "ħ", "kind": "any", "formula": "L" },
+        { "label": "L", "unit": "J·s", "kind": "any", "formula": "L*1.054571817e-34" }
+      ]
+    },
+    {
+      "id": "angular-momentum-z",
+      "name": "Orbital angular momentum z-component",
+      "description": "z-component of orbital angular momentum for quantum numbers l and m.",
+      "inputs": [
+        { "key": "l", "label": "Orbital quantum number l", "unit": "1", "kind": "any", "default": 1 },
+        { "key": "m", "label": "Magnetic quantum number m", "unit": "1", "kind": "any", "default": 0 }
+      ],
+      "outputs": [
+        { "label": "Lz in units of ħ", "unit": "ħ", "kind": "any", "formula": "m" },
+        { "label": "Lz", "unit": "J·s", "kind": "any", "formula": "m*1.054571817e-34" }
+      ]
+    },
+    {
+      "id": "angular-momentum-angle",
+      "name": "Orbital angular momentum angle",
+      "description": "Angle between L and the z-axis for quantum numbers l and m.",
+      "inputs": [
+        { "key": "l", "label": "Orbital quantum number l", "unit": "1", "kind": "any", "default": 1 },
+        { "key": "m", "label": "Magnetic quantum number m", "unit": "1", "kind": "any", "default": 0 }
+      ],
+      "outputs": [
+        { "label": "Polar angle", "unit": "°", "kind": "any", "formula": "acos(m/sqrt(l*(l+1)))*180/pi" },
+        { "label": "cos(theta)", "unit": "1", "kind": "any", "formula": "m/sqrt(l*(l+1))" }
+      ]
+    },
+    {
+      "id": "spin-magnitude",
+      "name": "Spin angular momentum magnitude",
+      "description": "Magnitude of spin angular momentum for spin quantum number s.",
+      "inputs": [
+        { "key": "s", "label": "Spin quantum number s", "unit": "1", "kind": "any", "default": 0.5 }
+      ],
+      "vars": [
+        { "name": "S", "formula": "sqrt(s*(s+1))" }
+      ],
+      "outputs": [
+        { "label": "S in units of ħ", "unit": "ħ", "kind": "any", "formula": "S" },
+        { "label": "S", "unit": "J·s", "kind": "any", "formula": "S*1.054571817e-34" }
+      ]
+    },
+    {
+      "id": "spin-z",
+      "name": "Spin z-component",
+      "description": "z-component of spin for spin quantum numbers s and ms.",
+      "inputs": [
+        { "key": "s", "label": "Spin quantum number s", "unit": "1", "kind": "any", "default": 0.5 },
+        { "key": "ms", "label": "Spin projection ms", "unit": "1", "kind": "any", "default": 0.5 }
+      ],
+      "outputs": [
+        { "label": "Sz in units of ħ", "unit": "ħ", "kind": "any", "formula": "ms" },
+        { "label": "Sz", "unit": "J·s", "kind": "any", "formula": "ms*1.054571817e-34" }
+      ]
+    },
+    {
+      "id": "hydrogen-degeneracy",
+      "name": "Hydrogen level degeneracy",
+      "description": "Total degeneracy of hydrogen level n including spin.",
+      "inputs": [
+        { "key": "n", "label": "Principal quantum number n", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Degeneracy", "unit": "states", "kind": "any", "formula": "2*n^2" }
+      ]
+    },
+    {
+      "id": "subshell-degeneracy",
+      "name": "Subshell degeneracy",
+      "description": "Number of states in a subshell with orbital quantum number l, including spin.",
+      "inputs": [
+        { "key": "l", "label": "Orbital quantum number l", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Degeneracy", "unit": "states", "kind": "any", "formula": "2*(2*l+1)" }
+      ]
+    },
+    {
+      "id": "orbital-magnetic-moment",
+      "name": "Orbital magnetic moment",
+      "description": "Magnitude of orbital magnetic moment for quantum number l.",
+      "inputs": [
+        { "key": "l", "label": "Orbital quantum number l", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "mu", "formula": "sqrt(l*(l+1))" }
+      ],
+      "outputs": [
+        { "label": "Magnetic moment", "unit": "μB", "kind": "any", "formula": "mu" },
+        { "label": "Magnetic moment", "unit": "J/T", "kind": "any", "formula": "mu*9.2740100783e-24" }
+      ]
+    },
+    {
+      "id": "zeeman-splitting",
+      "name": "Zeeman splitting",
+      "description": "Energy shift and photon frequency for magnetic quantum number m in field B.",
+      "inputs": [
+        { "key": "B", "label": "Magnetic flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "m", "label": "Magnetic quantum number m", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "dE", "formula": "9.2740100783e-24*B*m" }
+      ],
+      "outputs": [
+        { "label": "Energy shift", "unit": "J", "kind": "any", "formula": "dE" },
+        { "label": "Energy shift", "unit": "µeV", "kind": "any", "formula": "dE/1.602176634e-19*1e6" },
+        { "label": "Frequency", "unit": "GHz", "kind": "any", "formula": "dE/6.62607015e-34/1e9" }
+      ]
+    },
+    {
+      "id": "larmor-frequency",
+      "name": "Larmor precession frequency",
+      "description": "Electron spin precession frequency in a magnetic field.",
+      "inputs": [
+        { "key": "B", "label": "Magnetic flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "g", "label": "g-factor", "unit": "1", "kind": "any", "default": 2 }
+      ],
+      "outputs": [
+        { "label": "Larmor frequency", "unit": "GHz", "kind": "any", "formula": "g*9.2740100783e-24*B/6.62607015e-34/1e9" }
+      ]
+    },
+    {
+      "id": "cyclotron-frequency",
+      "name": "Cyclotron frequency",
+      "description": "Cyclotron frequency for a particle with effective mass in field B.",
+      "inputs": [
+        { "key": "B", "label": "Magnetic flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Cyclotron frequency", "unit": "GHz", "kind": "any", "formula": "1.602176634e-19*B/(2*pi*mEff*9.1093837015e-31)/1e9" }
+      ]
+    },
+    {
+      "id": "cyclotron-radius",
+      "name": "Cyclotron radius",
+      "description": "Radius of circular motion of a charged particle in a magnetic field.",
+      "inputs": [
+        { "key": "B", "label": "Magnetic flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 },
+        { "key": "v", "label": "Velocity", "unit": "m/s", "kind": "any", "default": 1000000 }
+      ],
+      "outputs": [
+        { "label": "Cyclotron radius", "unit": "µm", "kind": "L", "formula": "mEff*9.1093837015e-31*v/(1.602176634e-19*B)*1e6" }
+      ]
+    },
+    {
+      "id": "landau-level",
+      "name": "Landau level energy",
+      "description": "Non-relativistic Landau level energy in a magnetic field.",
+      "inputs": [
+        { "key": "B", "label": "Magnetic flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "n", "label": "Landau level n", "unit": "1", "kind": "any", "default": 0 },
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "omega", "formula": "1.602176634e-19*B/(mEff*9.1093837015e-31)" }
+      ],
+      "outputs": [
+        { "label": "Level energy", "unit": "meV", "kind": "any", "formula": "1.054571817e-34*omega*(n+0.5)/1.602176634e-19*1e3" }
+      ]
+    },
+    {
+      "id": "planck-radiance",
+      "name": "Planck blackbody spectral radiance",
+      "description": "Spectral radiance of a blackbody at temperature T and wavelength.",
+      "inputs": [
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 5000 },
+        { "key": "lambda", "label": "Wavelength", "unit": "nm", "kind": "L", "default": 500 }
+      ],
+      "vars": [
+        { "name": "B", "formula": "2*6.62607015e-34*2.99792458e8^2/(lambda*1e-9)^5/(exp(6.62607015e-34*2.99792458e8/((lambda*1e-9)*1.380649e-23*T))-1)" }
+      ],
+      "outputs": [
+        { "label": "Radiance", "unit": "W/m²/sr/m", "kind": "any", "formula": "B" },
+        { "label": "Radiance", "unit": "W/m²/sr/nm", "kind": "any", "formula": "B*1e-9" }
+      ]
+    },
+    {
+      "id": "wien-peak",
+      "name": "Wien peak wavelength",
+      "description": "Wavelength and frequency of maximum blackbody emission.",
+      "inputs": [
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 5000 }
+      ],
+      "vars": [
+        { "name": "lambda", "formula": "2.897771955e-3/T" }
+      ],
+      "outputs": [
+        { "label": "Peak wavelength", "unit": "nm", "kind": "L", "formula": "lambda*1e9" },
+        { "label": "Peak frequency", "unit": "THz", "kind": "any", "formula": "2.99792458e8/lambda/1e12" }
+      ]
+    },
+    {
+      "id": "stefan-boltzmann",
+      "name": "Stefan-Boltzmann radiated power",
+      "description": "Total radiated power from a blackbody or graybody surface.",
+      "inputs": [
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 },
+        { "key": "A", "label": "Surface area", "unit": "m²", "kind": "any", "default": 1 },
+        { "key": "eps", "label": "Emissivity", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "P", "formula": "eps*5.670374419e-8*A*T^4" }
+      ],
+      "outputs": [
+        { "label": "Radiated power", "unit": "W", "kind": "any", "formula": "P" },
+        { "label": "Radiated power", "unit": "kW", "kind": "any", "formula": "P*1e-3" }
+      ]
+    },
+    {
+      "id": "rayleigh-jeans",
+      "name": "Rayleigh-Jeans radiance",
+      "description": "Long-wavelength approximation to blackbody spectral radiance.",
+      "inputs": [
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 },
+        { "key": "lambda", "label": "Wavelength", "unit": "nm", "kind": "L", "default": 1000 }
+      ],
+      "vars": [
+        { "name": "B", "formula": "2*2.99792458e8*1.380649e-23*T/(lambda*1e-9)^4" }
+      ],
+      "outputs": [
+        { "label": "Radiance", "unit": "W/m²/sr/m", "kind": "any", "formula": "B" },
+        { "label": "Radiance", "unit": "W/m²/sr/nm", "kind": "any", "formula": "B*1e-9" }
+      ]
+    },
+    {
+      "id": "thermal-debroglie",
+      "name": "Thermal de Broglie wavelength",
+      "description": "Thermal matter wavelength for a particle at temperature T.",
+      "inputs": [
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 },
+        { "key": "m", "label": "Mass", "unit": "kg", "kind": "M", "default": 9.1093837015e-31 }
+      ],
+      "outputs": [
+        { "label": "Thermal wavelength", "unit": "pm", "kind": "L", "formula": "6.62607015e-34/sqrt(2*pi*m*1.380649e-23*T)*1e12" }
+      ]
+    },
+    {
+      "id": "fermi-energy",
+      "name": "Fermi energy",
+      "description": "Fermi energy and Fermi temperature from carrier density.",
+      "inputs": [
+        { "key": "n", "label": "Carrier density", "unit": "m⁻³", "kind": "any", "default": 8.5e28 }
+      ],
+      "vars": [
+        { "name": "EF", "formula": "1.054571817e-34^2/(2*9.1093837015e-31)*(3*pi^2*n)^(2/3)" }
+      ],
+      "outputs": [
+        { "label": "Fermi energy", "unit": "J", "kind": "any", "formula": "EF" },
+        { "label": "Fermi energy", "unit": "eV", "kind": "any", "formula": "EF/1.602176634e-19" },
+        { "label": "Fermi temperature", "unit": "K", "kind": "any", "formula": "EF/1.380649e-23" }
+      ]
+    },
+    {
+      "id": "fermi-velocity",
+      "name": "Fermi velocity",
+      "description": "Fermi velocity from carrier density for electrons.",
+      "inputs": [
+        { "key": "n", "label": "Carrier density", "unit": "m⁻³", "kind": "any", "default": 8.5e28 }
+      ],
+      "vars": [
+        { "name": "vF", "formula": "1.054571817e-34/9.1093837015e-31*(3*pi^2*n)^(1/3)" }
+      ],
+      "outputs": [
+        { "label": "Fermi velocity", "unit": "m/s", "kind": "any", "formula": "vF" },
+        { "label": "Fraction of c", "unit": "c", "kind": "any", "formula": "vF/2.99792458e8" }
+      ]
+    },
+    {
+      "id": "dos-3d",
+      "name": "3D density of states",
+      "description": "Electron density of states per unit volume and energy.",
+      "inputs": [
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 },
+        { "key": "E", "label": "Energy above band edge", "unit": "eV", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "g", "formula": "1/(2*pi^2)*(2*mEff*9.1093837015e-31/1.054571817e-34^2)^(3/2)*sqrt(E*1.602176634e-19)" }
+      ],
+      "outputs": [
+        { "label": "DOS", "unit": "J⁻¹·m⁻³", "kind": "any", "formula": "g" },
+        { "label": "DOS per eV", "unit": "eV⁻¹·m⁻³", "kind": "any", "formula": "g*1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "dos-2d",
+      "name": "2D density of states",
+      "description": "Constant 2D electron density of states per unit area.",
+      "inputs": [
+        { "key": "mEff", "label": "Effective mass", "unit": "mₑ", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "g", "formula": "mEff*9.1093837015e-31/(pi*1.054571817e-34^2)" }
+      ],
+      "outputs": [
+        { "label": "DOS", "unit": "J⁻¹·m⁻²", "kind": "any", "formula": "g" },
+        { "label": "DOS per eV", "unit": "eV⁻¹·m⁻²", "kind": "any", "formula": "g*1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "fermi-dirac",
+      "name": "Fermi-Dirac occupation",
+      "description": "Occupation probability for energy relative to Fermi energy.",
+      "inputs": [
+        { "key": "EminusEf", "label": "E - Ef", "unit": "eV", "kind": "any", "default": 0 },
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 }
+      ],
+      "outputs": [
+        { "label": "Occupation probability", "unit": "1", "kind": "any", "formula": "1/(exp(EminusEf*1.602176634e-19/(1.380649e-23*T))+1)" }
+      ]
+    },
+    {
+      "id": "bose-einstein",
+      "name": "Bose-Einstein occupation",
+      "description": "Bose-Einstein occupation for x = E/kT.",
+      "inputs": [
+        { "key": "x", "label": "x = E/kT", "unit": "1", "kind": "any", "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Occupation", "unit": "1", "kind": "any", "formula": "1/(exp(x)-1)" }
+      ]
+    },
+    {
+      "id": "planck-occupancy",
+      "name": "Planck oscillator occupation",
+      "description": "Mean photon or oscillator number for energy E at temperature T.",
+      "inputs": [
+        { "key": "E", "label": "Quantum energy", "unit": "eV", "kind": "any", "default": 0.1 },
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 }
+      ],
+      "outputs": [
+        { "label": "Mean occupation", "unit": "1", "kind": "any", "formula": "1/(exp(E*1.602176634e-19/(1.380649e-23*T))-1)" }
+      ]
+    },
+    {
+      "id": "two-level-partition",
+      "name": "Two-level system partition",
+      "description": "Partition function, populations and average energy of a two-level system.",
+      "inputs": [
+        { "key": "gap", "label": "Energy gap", "unit": "eV", "kind": "any", "default": 0.1 },
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 }
+      ],
+      "vars": [
+        { "name": "x", "formula": "gap*1.602176634e-19/(1.380649e-23*T)" },
+        { "name": "Z", "formula": "1+exp(-x)" }
+      ],
+      "outputs": [
+        { "label": "Partition function", "unit": "1", "kind": "any", "formula": "Z" },
+        { "label": "Ground population", "unit": "1", "kind": "any", "formula": "1/Z" },
+        { "label": "Excited population", "unit": "1", "kind": "any", "formula": "exp(-x)/Z" },
+        { "label": "Average energy", "unit": "eV", "kind": "any", "formula": "gap*exp(-x)/Z" }
+      ]
+    },
+    {
+      "id": "two-level-heat-capacity",
+      "name": "Two-level heat capacity",
+      "description": "Heat capacity per particle for a two-level system.",
+      "inputs": [
+        { "key": "gap", "label": "Energy gap", "unit": "eV", "kind": "any", "default": 0.1 },
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 }
+      ],
+      "vars": [
+        { "name": "x", "formula": "gap*1.602176634e-19/(1.380649e-23*T)" },
+        { "name": "C", "formula": "1.380649e-23*x^2*exp(x)/(exp(x)+1)^2" }
+      ],
+      "outputs": [
+        { "label": "Heat capacity", "unit": "J/K", "kind": "any", "formula": "C" },
+        { "label": "Heat capacity", "unit": "k_B", "kind": "any", "formula": "C/1.380649e-23" }
+      ]
+    },
+    {
+      "id": "qubit-probabilities",
+      "name": "Qubit probabilities from Bloch angles",
+      "description": "Measurement probabilities and Bloch vector from theta and phi.",
+      "inputs": [
+        { "key": "theta", "label": "Polar angle theta", "unit": "°", "kind": "any", "default": 90 },
+        { "key": "phi", "label": "Azimuthal angle phi", "unit": "°", "kind": "any", "default": 0 }
+      ],
+      "outputs": [
+        { "label": "P(|0>)", "unit": "1", "kind": "any", "formula": "cos(theta*pi/360)^2" },
+        { "label": "P(|1>)", "unit": "1", "kind": "any", "formula": "sin(theta*pi/360)^2" },
+        { "label": "Bloch x", "unit": "1", "kind": "any", "formula": "sin(theta*pi/180)*cos(phi*pi/180)" },
+        { "label": "Bloch y", "unit": "1", "kind": "any", "formula": "sin(theta*pi/180)*sin(phi*pi/180)" },
+        { "label": "Bloch z", "unit": "1", "kind": "any", "formula": "cos(theta*pi/180)" }
+      ]
+    },
+    {
+      "id": "bloch-angles",
+      "name": "Bloch angles from qubit probability",
+      "description": "Polar angle and z-component from P(|0>).",
+      "inputs": [
+        { "key": "P0", "label": "P(|0>)", "unit": "1", "kind": "any", "default": 0.5 },
+        { "key": "phi", "label": "Azimuthal angle phi", "unit": "°", "kind": "any", "default": 0 }
+      ],
+      "outputs": [
+        { "label": "Theta", "unit": "°", "kind": "any", "formula": "2*acos(sqrt(P0))*180/pi" },
+        { "label": "Bloch z", "unit": "1", "kind": "any", "formula": "2*P0-1" },
+        { "label": "P(|1>)", "unit": "1", "kind": "any", "formula": "1-P0" }
+      ]
+    },
+    {
+      "id": "rx-rotation",
+      "name": "RX rotation from |0>",
+      "description": "Population after an RX rotation by angle theta starting in |0>.",
+      "inputs": [
+        { "key": "theta", "label": "Rotation angle", "unit": "°", "kind": "any", "default": 90 }
+      ],
+      "outputs": [
+        { "label": "P(|0>)", "unit": "1", "kind": "any", "formula": "cos(theta*pi/360)^2" },
+        { "label": "P(|1>)", "unit": "1", "kind": "any", "formula": "sin(theta*pi/360)^2" }
+      ]
+    },
+    {
+      "id": "rabi-oscillation",
+      "name": "Rabi oscillation population",
+      "description": "Excited-state probability under resonant Rabi driving.",
+      "inputs": [
+        { "key": "fRabi", "label": "Rabi frequency", "unit": "MHz", "kind": "any", "default": 10 },
+        { "key": "t", "label": "Pulse duration", "unit": "ns", "kind": "any", "default": 25 }
+      ],
+      "outputs": [
+        { "label": "P(excited)", "unit": "1", "kind": "any", "formula": "sin(pi*fRabi*1e6*t*1e-9)^2" },
+        { "label": "P(ground)", "unit": "1", "kind": "any", "formula": "cos(pi*fRabi*1e6*t*1e-9)^2" }
+      ]
+    },
+    {
+      "id": "t2-coherence",
+      "name": "T2 coherence decay",
+      "description": "Coherence amplitude after time t for dephasing time T2.",
+      "inputs": [
+        { "key": "T2", "label": "T2 time", "unit": "µs", "kind": "any", "default": 10 },
+        { "key": "t", "label": "Elapsed time", "unit": "µs", "kind": "any", "default": 5 }
+      ],
+      "outputs": [
+        { "label": "Coherence", "unit": "1", "kind": "any", "formula": "exp(-t/T2)" }
+      ]
+    },
+    {
+      "id": "t1-relaxation",
+      "name": "T1 relaxation",
+      "description": "Excited-state population after time t for relaxation time T1.",
+      "inputs": [
+        { "key": "T1", "label": "T1 time", "unit": "µs", "kind": "any", "default": 10 },
+        { "key": "t", "label": "Elapsed time", "unit": "µs", "kind": "any", "default": 5 }
+      ],
+      "outputs": [
+        { "label": "Excited population", "unit": "1", "kind": "any", "formula": "exp(-t/T1)" },
+        { "label": "Ground population", "unit": "1", "kind": "any", "formula": "1-exp(-t/T1)" }
+      ]
+    },
+    {
+      "id": "photon-number-thermal",
+      "name": "Thermal photon occupation",
+      "description": "Mean photon number of a mode at frequency f and temperature T.",
+      "inputs": [
+        { "key": "f", "label": "Frequency", "unit": "THz", "kind": "any", "default": 300 },
+        { "key": "T", "label": "Temperature", "unit": "K", "kind": "any", "default": 300 }
+      ],
+      "vars": [
+        { "name": "x", "formula": "6.62607015e-34*f*1e12/(1.380649e-23*T)" }
+      ],
+      "outputs": [
+        { "label": "Mean photon number", "unit": "1", "kind": "any", "formula": "1/(exp(x)-1)" }
+      ]
+    },
+    {
+      "id": "compton-wavelength",
+      "name": "Compton wavelength",
+      "description": "Compton wavelength of a particle from its mass.",
+      "inputs": [
+        { "key": "m", "label": "Mass", "unit": "kg", "kind": "M", "default": 9.1093837015e-31 }
+      ],
+      "vars": [
+        { "name": "lambda", "formula": "6.62607015e-34/(m*2.99792458e8)" }
+      ],
+      "outputs": [
+        { "label": "Compton wavelength", "unit": "pm", "kind": "L", "formula": "lambda*1e12" },
+        { "label": "Compton wavelength", "unit": "fm", "kind": "L", "formula": "lambda*1e15" }
+      ]
+    },
+    {
+      "id": "conductance-quantum",
+      "name": "Conductance quantum",
+      "description": "Quantum of conductance and its inverse resistance.",
+      "inputs": [],
+      "outputs": [
+        { "label": "Conductance quantum", "unit": "S", "kind": "any", "formula": "2*1.602176634e-19^2/6.62607015e-34" },
+        { "label": "Conductance quantum", "unit": "mS", "kind": "any", "formula": "2*1.602176634e-19^2/6.62607015e-34*1e3" },
+        { "label": "Resistance quantum", "unit": "kΩ", "kind": "any", "formula": "6.62607015e-34/(2*1.602176634e-19^2)*1e-3" }
+      ]
+    },
+    {
+      "id": "magnetic-flux-quantum",
+      "name": "Magnetic flux quantum",
+      "description": "Superconducting magnetic flux quantum.",
+      "inputs": [],
+      "outputs": [
+        { "label": "Flux quantum", "unit": "Wb", "kind": "any", "formula": "6.62607015e-34/(2*1.602176634e-19)" },
+        { "label": "Flux quantum", "unit": "fWb", "kind": "any", "formula": "6.62607015e-34/(2*1.602176634e-19)*1e15" }
+      ]
+    },
+    {
+      "id": "josephson-frequency",
+      "name": "Josephson frequency",
+      "description": "Josephson oscillation frequency for a voltage across a junction.",
+      "inputs": [
+        { "key": "V", "label": "Junction voltage", "unit": "µV", "kind": "any", "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Josephson frequency", "unit": "GHz", "kind": "any", "formula": "2*1.602176634e-19*V*1e-6/6.62607015e-34/1e9" }
+      ]
+    }
+  ]
+}
