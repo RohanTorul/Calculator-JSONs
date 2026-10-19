@@ -332,7 +332,7 @@
       ],
       "vars": [
         { "name": "kappa", "formula": "sqrt(2*mEff*9.1093837015e-31*(V-E)*1.602176634e-19)/1.054571817e-34" },
-        { "name": "T", "formula": "1/(1+V^2/(4*E*(V-E))*sinh(kappa*L*1e-9)^2)" }
+        { "name": "T", "formula": "1/(1+V^2/(4*E*(V-E))*((exp(kappa*L*1e-9)-exp(-kappa*L*1e-9))/2)^2)" }
       ],
       "outputs": [
         { "label": "Transmission", "unit": "1", "kind": "any", "formula": "T" },
