@@ -1,0 +1,983 @@
+{
+  "name": "Physics E&M pack",
+  "tools": [
+    {
+      "id": "coulomb",
+      "name": "Coulomb force between two charges",
+      "description": "Electrostatic force between two point charges in vacuum. Positive result = repulsion.",
+      "inputs": [
+        { "key": "q1", "label": "Charge q1", "unit": "µC", "kind": "any", "default": 1 },
+        { "key": "q2", "label": "Charge q2", "unit": "µC", "kind": "any", "default": -1 },
+        { "key": "r", "label": "Separation", "unit": "m", "kind": "L", "default": 0.1 }
+      ],
+      "vars": [
+        { "name": "F", "formula": "8.9875517923e9*(q1*1e-6)*(q2*1e-6)/r^2" }
+      ],
+      "outputs": [
+        { "label": "Force (signed)", "unit": "N", "kind": "any", "formula": "F" },
+        { "label": "Force magnitude", "unit": "mN", "kind": "any", "formula": "abs(F)*1e3" }
+      ]
+    },
+    {
+      "id": "efield-point",
+      "name": "Electric field of a point charge",
+      "description": "Field magnitude at distance r from a point charge.",
+      "inputs": [
+        { "key": "q", "label": "Charge", "unit": "µC", "kind": "any", "default": 1 },
+        { "key": "r", "label": "Distance", "unit": "m", "kind": "L", "default": 0.5 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "8.9875517923e9*(q*1e-6)/r^2" }
+      ],
+      "outputs": [
+        { "label": "Field strength", "unit": "V/m", "kind": "any", "formula": "E" },
+        { "label": "Field strength", "unit": "kV/m", "kind": "any", "formula": "E*1e-3" }
+      ]
+    },
+    {
+      "id": "epot-point",
+      "name": "Potential of a point charge",
+      "description": "Electric potential at distance r from a point charge (zero at infinity).",
+      "inputs": [
+        { "key": "q", "label": "Charge", "unit": "µC", "kind": "any", "default": 1 },
+        { "key": "r", "label": "Distance", "unit": "m", "kind": "L", "default": 0.5 }
+      ],
+      "outputs": [
+        { "label": "Potential", "unit": "V", "kind": "any", "formula": "8.9875517923e9*(q*1e-6)/r" },
+        { "label": "Potential", "unit": "kV", "kind": "any", "formula": "8.9875517923e9*(q*1e-6)/r*1e-3" }
+      ]
+    },
+    {
+      "id": "epe-pair",
+      "name": "Potential energy of two charges",
+      "description": "Electrostatic potential energy of a pair of point charges.",
+      "inputs": [
+        { "key": "q1", "label": "Charge q1", "unit": "µC", "kind": "any", "default": 1 },
+        { "key": "q2", "label": "Charge q2", "unit": "µC", "kind": "any", "default": -1 },
+        { "key": "r", "label": "Separation", "unit": "m", "kind": "L", "default": 0.1 }
+      ],
+      "vars": [
+        { "name": "U", "formula": "8.9875517923e9*(q1*1e-6)*(q2*1e-6)/r" }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "µJ", "kind": "any", "formula": "U*1e6" },
+        { "label": "Energy", "unit": "eV", "kind": "any", "formula": "U/1.602176634e-19" }
+      ]
+    },
+    {
+      "id": "efield-plates",
+      "name": "Field between parallel plates",
+      "description": "Uniform field between two plates at potential difference V and spacing d.",
+      "inputs": [
+        { "key": "V", "label": "Voltage", "unit": "V", "kind": "any", "default": 100 },
+        { "key": "d", "label": "Plate gap", "unit": "mm", "kind": "L", "default": 10 }
+      ],
+      "outputs": [
+        { "label": "Field", "unit": "kV/m", "kind": "any", "formula": "V/d" },
+        { "label": "Field", "unit": "V/m", "kind": "any", "formula": "V/(d*1e-3)" }
+      ]
+    },
+    {
+      "id": "par-plate-cap",
+      "name": "Parallel plate capacitance",
+      "description": "Capacitance of a parallel plate capacitor, optionally with a dielectric.",
+      "inputs": [
+        { "key": "A", "label": "Plate area", "unit": "cm²", "kind": "any", "default": 100 },
+        { "key": "d", "label": "Plate gap", "unit": "mm", "kind": "L", "default": 1 },
+        { "key": "er", "label": "Dielectric", "options": [[1, "Air / vacuum"], [2.2, "PTFE"], [4.5, "Paper"], [4.7, "FR4"], [10, "Ceramic"]], "default": 1 }
+      ],
+      "vars": [
+        { "name": "Cap", "formula": "8.8541878128e-12*er*(A*1e-4)/(d*1e-3)" }
+      ],
+      "outputs": [
+        { "label": "Capacitance", "unit": "pF", "kind": "any", "formula": "Cap*1e12" },
+        { "label": "Capacitance", "unit": "nF", "kind": "any", "formula": "Cap*1e9" }
+      ]
+    },
+    {
+      "id": "cap-charge",
+      "name": "Capacitor charge and energy",
+      "description": "Charge stored and energy stored for a capacitor at a given voltage.",
+      "inputs": [
+        { "key": "C", "label": "Capacitance", "unit": "µF", "kind": "any", "default": 100 },
+        { "key": "V", "label": "Voltage", "unit": "V", "kind": "any", "default": 12 }
+      ],
+      "vars": [
+        { "name": "Q", "formula": "C*1e-6*V" },
+        { "name": "W", "formula": "0.5*C*1e-6*V^2" }
+      ],
+      "outputs": [
+        { "label": "Charge", "unit": "mC", "kind": "any", "formula": "Q*1e3" },
+        { "label": "Stored energy", "unit": "mJ", "kind": "any", "formula": "W*1e3" },
+        { "label": "Stored energy", "unit": "J", "kind": "any", "formula": "W" }
+      ]
+    },
+    {
+      "id": "cap-series-parallel",
+      "name": "Two capacitors in series / parallel",
+      "description": "Equivalent capacitance for two capacitors.",
+      "inputs": [
+        { "key": "C1", "label": "Capacitor C1", "unit": "µF", "kind": "any", "default": 10 },
+        { "key": "C2", "label": "Capacitor C2", "unit": "µF", "kind": "any", "default": 22 }
+      ],
+      "outputs": [
+        { "label": "Series equivalent", "unit": "µF", "kind": "any", "formula": "C1*C2/(C1+C2)" },
+        { "label": "Parallel equivalent", "unit": "µF", "kind": "any", "formula": "C1+C2" }
+      ]
+    },
+    {
+      "id": "dielectric-cap",
+      "name": "Capacitor with dielectric inserted",
+      "description": "New capacitance, charge and energy at constant applied voltage after inserting a dielectric.",
+      "inputs": [
+        { "key": "C0", "label": "Vacuum capacitance", "unit": "nF", "kind": "any", "default": 1 },
+        { "key": "V", "label": "Voltage", "unit": "V", "kind": "any", "default": 100 },
+        { "key": "er", "label": "Dielectric", "options": [[1, "Air / vacuum"], [2.2, "PTFE"], [4.5, "Paper"], [4.7, "FR4"], [10, "Ceramic"], [80, "Water"]], "default": 4.7 }
+      ],
+      "vars": [
+        { "name": "C", "formula": "C0*er" },
+        { "name": "Q", "formula": "C*1e-9*V" }
+      ],
+      "outputs": [
+        { "label": "New capacitance", "unit": "nF", "kind": "any", "formula": "C" },
+        { "label": "Stored charge", "unit": "µC", "kind": "any", "formula": "Q*1e6" },
+        { "label": "Stored energy", "unit": "µJ", "kind": "any", "formula": "0.5*C*1e-9*V^2*1e6" }
+      ]
+    },
+    {
+      "id": "sphere-cap",
+      "name": "Isolated sphere capacitance",
+      "description": "Self-capacitance of a conducting sphere.",
+      "inputs": [
+        { "key": "R", "label": "Radius", "unit": "cm", "kind": "L", "default": 10 }
+      ],
+      "outputs": [
+        { "label": "Capacitance", "unit": "pF", "kind": "any", "formula": "4*pi*8.8541878128e-12*(R*0.01)*1e12" }
+      ]
+    },
+    {
+      "id": "coax-cap",
+      "name": "Coaxial cable capacitance",
+      "description": "Capacitance of a coaxial (cylindrical) capacitor of length l with inner radius a and outer radius b.",
+      "inputs": [
+        { "key": "l", "label": "Length", "unit": "m", "kind": "L", "default": 1 },
+        { "key": "a", "label": "Inner radius a", "unit": "mm", "kind": "L", "default": 1 },
+        { "key": "b", "label": "Outer radius b", "unit": "mm", "kind": "L", "default": 5 },
+        { "key": "er", "label": "Dielectric", "options": [[1, "Air / vacuum"], [2.2, "PTFE"], [2.3, "Polyethylene"], [4, "PVC"]], "default": 2.3 }
+      ],
+      "vars": [
+        { "name": "Cap", "formula": "2*pi*8.8541878128e-12*er*l/ln(b/a)" }
+      ],
+      "outputs": [
+        { "label": "Capacitance", "unit": "pF", "kind": "any", "formula": "Cap*1e12" },
+        { "label": "Capacitance per metre", "unit": "pF/m", "kind": "any", "formula": "Cap/l*1e12" }
+      ]
+    },
+    {
+      "id": "spherical-cap",
+      "name": "Spherical capacitor",
+      "description": "Capacitance of two concentric conducting spheres.",
+      "inputs": [
+        { "key": "a", "label": "Inner radius", "unit": "mm", "kind": "L", "default": 10 },
+        { "key": "b", "label": "Outer radius", "unit": "mm", "kind": "L", "default": 20 },
+        { "key": "er", "label": "Dielectric", "options": [[1, "Air / vacuum"], [2.2, "PTFE"], [4.7, "FR4"]], "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Capacitance", "unit": "pF", "kind": "any", "formula": "4*pi*8.8541878128e-12*er*(a*1e-3)*(b*1e-3)/((b-a)*1e-3)*1e12" }
+      ]
+    },
+    {
+      "id": "plate-force",
+      "name": "Attractive force between capacitor plates",
+      "description": "Force pulling parallel plates together.",
+      "inputs": [
+        { "key": "A", "label": "Plate area", "unit": "cm²", "kind": "any", "default": 100 },
+        { "key": "d", "label": "Plate gap", "unit": "mm", "kind": "L", "default": 1 },
+        { "key": "V", "label": "Voltage", "unit": "V", "kind": "any", "default": 100 },
+        { "key": "er", "label": "Dielectric", "options": [[1, "Air / vacuum"], [2.2, "PTFE"], [4.7, "FR4"]], "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Force", "unit": "mN", "kind": "any", "formula": "0.5*8.8541878128e-12*er*(A*1e-4)*(V/(d*1e-3))^2*1e3" }
+      ]
+    },
+    {
+      "id": "rc-tau",
+      "name": "RC time constant",
+      "description": "Time constant and cutoff frequency of an RC circuit.",
+      "inputs": [
+        { "key": "R", "label": "Resistance", "unit": "kΩ", "kind": "any", "default": 10 },
+        { "key": "C", "label": "Capacitance", "unit": "µF", "kind": "any", "default": 100 }
+      ],
+      "vars": [
+        { "name": "tau", "formula": "R*C*1e-3" }
+      ],
+      "outputs": [
+        { "label": "Time constant", "unit": "ms", "kind": "any", "formula": "tau*1e3" },
+        { "label": "Time constant", "unit": "s", "kind": "any", "formula": "tau" },
+        { "label": "Cutoff frequency", "unit": "Hz", "kind": "any", "formula": "1/(2*pi*tau)" }
+      ]
+    },
+    {
+      "id": "rc-charge",
+      "name": "RC charging curve",
+      "description": "Capacitor voltage and current at time t while charging through a resistor.",
+      "inputs": [
+        { "key": "Vs", "label": "Supply voltage", "unit": "V", "kind": "any", "default": 5 },
+        { "key": "R", "label": "Resistance", "unit": "kΩ", "kind": "any", "default": 10 },
+        { "key": "C", "label": "Capacitance", "unit": "µF", "kind": "any", "default": 100 },
+        { "key": "t", "label": "Time", "unit": "ms", "kind": "any", "default": 500 }
+      ],
+      "vars": [
+        { "name": "tau", "formula": "R*C" },
+        { "name": "Vc", "formula": "Vs*(1-exp(-t/tau))" }
+      ],
+      "outputs": [
+        { "label": "Capacitor voltage", "unit": "V", "kind": "any", "formula": "Vc" },
+        { "label": "Charging current", "unit": "mA", "kind": "any", "formula": "Vs/R*exp(-t/tau)" },
+        { "label": "Charge", "unit": "µC", "kind": "any", "formula": "C*Vc" }
+      ]
+    },
+    {
+      "id": "rc-discharge",
+      "name": "RC discharge curve",
+      "description": "Capacitor voltage and current at time t while discharging through a resistor.",
+      "inputs": [
+        { "key": "V0", "label": "Initial voltage", "unit": "V", "kind": "any", "default": 5 },
+        { "key": "R", "label": "Resistance", "unit": "kΩ", "kind": "any", "default": 10 },
+        { "key": "C", "label": "Capacitance", "unit": "µF", "kind": "any", "default": 100 },
+        { "key": "t", "label": "Time", "unit": "ms", "kind": "any", "default": 500 }
+      ],
+      "vars": [
+        { "name": "tau", "formula": "R*C" }
+      ],
+      "outputs": [
+        { "label": "Capacitor voltage", "unit": "V", "kind": "any", "formula": "V0*exp(-t/tau)" },
+        { "label": "Discharge current", "unit": "mA", "kind": "any", "formula": "V0/R*exp(-t/tau)" },
+        { "label": "Energy remaining", "unit": "mJ", "kind": "any", "formula": "0.5*C*1e-6*V0^2*exp(-2*t/tau)*1e3" }
+      ]
+    },
+    {
+      "id": "rl-tau",
+      "name": "RL time constant",
+      "description": "Time constant of a series LR circuit.",
+      "inputs": [
+        { "key": "L", "label": "Inductance", "unit": "mH", "kind": "any", "default": 10 },
+        { "key": "R", "label": "Resistance", "unit": "Ω", "kind": "any", "default": 10 }
+      ],
+      "vars": [
+        { "name": "tau", "formula": "L/R" }
+      ],
+      "outputs": [
+        { "label": "Time constant", "unit": "ms", "kind": "any", "formula": "tau" },
+        { "label": "Cutoff frequency", "unit": "Hz", "kind": "any", "formula": "1000/(2*pi*tau)" }
+      ]
+    },
+    {
+      "id": "rl-rise",
+      "name": "RL current rise",
+      "description": "Inductor current at time t after switching on a DC supply.",
+      "inputs": [
+        { "key": "Vs", "label": "Supply voltage", "unit": "V", "kind": "any", "default": 12 },
+        { "key": "R", "label": "Resistance", "unit": "Ω", "kind": "any", "default": 10 },
+        { "key": "L", "label": "Inductance", "unit": "mH", "kind": "any", "default": 10 },
+        { "key": "t", "label": "Time", "unit": "ms", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "tau", "formula": "L/R" }
+      ],
+      "outputs": [
+        { "label": "Current", "unit": "mA", "kind": "any", "formula": "Vs/R*(1-exp(-t/tau))*1e3" },
+        { "label": "Final current", "unit": "mA", "kind": "any", "formula": "Vs/R*1e3" },
+        { "label": "Voltage across inductor", "unit": "V", "kind": "any", "formula": "Vs*exp(-t/tau)" }
+      ]
+    },
+    {
+      "id": "ind-energy",
+      "name": "Energy stored in an inductor",
+      "description": "Magnetic energy stored by an inductor carrying current I.",
+      "inputs": [
+        { "key": "L", "label": "Inductance", "unit": "mH", "kind": "any", "default": 10 },
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 2 }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "mJ", "kind": "any", "formula": "0.5*L*I^2" },
+        { "label": "Energy", "unit": "J", "kind": "any", "formula": "0.5*L*1e-3*I^2" }
+      ]
+    },
+    {
+      "id": "xl-reactance",
+      "name": "Inductive reactance",
+      "description": "Reactance of an inductor at a given frequency.",
+      "inputs": [
+        { "key": "f", "label": "Frequency", "unit": "Hz", "kind": "any", "default": 50 },
+        { "key": "L", "label": "Inductance", "unit": "mH", "kind": "any", "default": 10 }
+      ],
+      "outputs": [
+        { "label": "Reactance", "unit": "Ω", "kind": "any", "formula": "2*pi*f*L*1e-3" }
+      ]
+    },
+    {
+      "id": "xc-reactance",
+      "name": "Capacitive reactance",
+      "description": "Reactance of a capacitor at a given frequency.",
+      "inputs": [
+        { "key": "f", "label": "Frequency", "unit": "Hz", "kind": "any", "default": 50 },
+        { "key": "C", "label": "Capacitance", "unit": "µF", "kind": "any", "default": 10 }
+      ],
+      "outputs": [
+        { "label": "Reactance", "unit": "Ω", "kind": "any", "formula": "1/(2*pi*f*C*1e-6)" }
+      ]
+    },
+    {
+      "id": "rlc-series",
+      "name": "Series RLC impedance",
+      "description": "Impedance, phase angle and current of a series RLC circuit.",
+      "inputs": [
+        { "key": "R", "label": "Resistance", "unit": "Ω", "kind": "any", "default": 100 },
+        { "key": "L", "label": "Inductance", "unit": "mH", "kind": "any", "default": 10 },
+        { "key": "C", "label": "Capacitance", "unit": "µF", "kind": "any", "default": 10 },
+        { "key": "f", "label": "Frequency", "unit": "Hz", "kind": "any", "default": 50 },
+        { "key": "V", "label": "RMS voltage", "unit": "V", "kind": "any", "default": 230 }
+      ],
+      "vars": [
+        { "name": "XL", "formula": "2*pi*f*L*1e-3" },
+        { "name": "XC", "formula": "1/(2*pi*f*C*1e-6)" },
+        { "name": "Z", "formula": "sqrt(R^2+(XL-XC)^2)" }
+      ],
+      "outputs": [
+        { "label": "Inductive reactance", "unit": "Ω", "kind": "any", "formula": "XL" },
+        { "label": "Capacitive reactance", "unit": "Ω", "kind": "any", "formula": "XC" },
+        { "label": "Impedance", "unit": "Ω", "kind": "any", "formula": "Z" },
+        { "label": "Phase angle", "unit": "°", "kind": "any", "formula": "atan((XL-XC)/R)*180/pi" },
+        { "label": "RMS current", "unit": "mA", "kind": "any", "formula": "V/Z*1e3" }
+      ]
+    },
+    {
+      "id": "rlc-resonance",
+      "name": "LC resonant frequency",
+      "description": "Resonant frequency and period of an LC tank.",
+      "inputs": [
+        { "key": "L", "label": "Inductance", "unit": "mH", "kind": "any", "default": 10 },
+        { "key": "C", "label": "Capacitance", "unit": "µF", "kind": "any", "default": 100 }
+      ],
+      "vars": [
+        { "name": "f0", "formula": "1/(2*pi*sqrt(L*1e-3*C*1e-6))" }
+      ],
+      "outputs": [
+        { "label": "Resonant frequency", "unit": "Hz", "kind": "any", "formula": "f0" },
+        { "label": "Resonant frequency", "unit": "kHz", "kind": "any", "formula": "f0*1e-3" },
+        { "label": "Period", "unit": "ms", "kind": "any", "formula": "1e3/f0" },
+        { "label": "Angular frequency", "unit": "rad/s", "kind": "any", "formula": "2*pi*f0" }
+      ]
+    },
+    {
+      "id": "ohm-law",
+      "name": "Ohm's law",
+      "description": "Voltage and power from current and resistance.",
+      "inputs": [
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 2 },
+        { "key": "R", "label": "Resistance", "unit": "Ω", "kind": "any", "default": 10 }
+      ],
+      "outputs": [
+        { "label": "Voltage", "unit": "V", "kind": "any", "formula": "I*R" },
+        { "label": "Power", "unit": "W", "kind": "any", "formula": "I^2*R" }
+      ]
+    },
+    {
+      "id": "power-vi",
+      "name": "Electrical power",
+      "description": "Power and energy consumption from voltage and current.",
+      "inputs": [
+        { "key": "V", "label": "Voltage", "unit": "V", "kind": "any", "default": 230 },
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 0.5 }
+      ],
+      "vars": [
+        { "name": "P", "formula": "V*I" }
+      ],
+      "outputs": [
+        { "label": "Power", "unit": "W", "kind": "any", "formula": "P" },
+        { "label": "Energy per hour", "unit": "Wh", "kind": "any", "formula": "P" },
+        { "label": "Resistance", "unit": "Ω", "kind": "any", "formula": "V/I" }
+      ]
+    },
+    {
+      "id": "res-series-parallel",
+      "name": "Two resistors in series / parallel",
+      "description": "Equivalent resistance for two resistors.",
+      "inputs": [
+        { "key": "R1", "label": "Resistor R1", "unit": "Ω", "kind": "any", "default": 100 },
+        { "key": "R2", "label": "Resistor R2", "unit": "Ω", "kind": "any", "default": 220 }
+      ],
+      "outputs": [
+        { "label": "Series equivalent", "unit": "Ω", "kind": "any", "formula": "R1+R2" },
+        { "label": "Parallel equivalent", "unit": "Ω", "kind": "any", "formula": "R1*R2/(R1+R2)" }
+      ]
+    },
+    {
+      "id": "voltage-divider",
+      "name": "Voltage divider",
+      "description": "Output voltage, current and dissipation of a two-resistor divider.",
+      "inputs": [
+        { "key": "Vin", "label": "Input voltage", "unit": "V", "kind": "any", "default": 12 },
+        { "key": "R1", "label": "Top resistor R1", "unit": "kΩ", "kind": "any", "default": 10 },
+        { "key": "R2", "label": "Bottom resistor R2", "unit": "kΩ", "kind": "any", "default": 4.7 }
+      ],
+      "outputs": [
+        { "label": "Output voltage", "unit": "V", "kind": "any", "formula": "Vin*R2/(R1+R2)" },
+        { "label": "Divider current", "unit": "mA", "kind": "any", "formula": "Vin/(R1+R2)" },
+        { "label": "Total dissipation", "unit": "mW", "kind": "any", "formula": "Vin^2/(R1+R2)" }
+      ]
+    },
+    {
+      "id": "current-divider",
+      "name": "Current divider",
+      "description": "Split of a total current between two parallel resistors.",
+      "inputs": [
+        { "key": "It", "label": "Total current", "unit": "A", "kind": "any", "default": 1 },
+        { "key": "R1", "label": "Branch resistor R1", "unit": "Ω", "kind": "any", "default": 10 },
+        { "key": "R2", "label": "Branch resistor R2", "unit": "Ω", "kind": "any", "default": 22 }
+      ],
+      "outputs": [
+        { "label": "Current through R1", "unit": "A", "kind": "any", "formula": "It*R2/(R1+R2)" },
+        { "label": "Current through R2", "unit": "A", "kind": "any", "formula": "It*R1/(R1+R2)" }
+      ]
+    },
+    {
+      "id": "wire-resistance",
+      "name": "Wire resistance",
+      "description": "Resistance of a conductor from resistivity, length and cross section.",
+      "inputs": [
+        { "key": "rho", "label": "Material", "options": [[1.68e-8, "Copper"], [2.82e-8, "Aluminium"], [1.59e-8, "Silver"], [2.44e-8, "Gold"], [1.1e-6, "Nichrome"], [1.0e-7, "Carbon steel"]], "default": 1.68e-8 },
+        { "key": "L", "label": "Length", "unit": "m", "kind": "L", "default": 10 },
+        { "key": "A", "label": "Cross section", "unit": "mm²", "kind": "any", "default": 1 }
+      ],
+      "vars": [
+        { "name": "R", "formula": "rho*L/(A*1e-6)" }
+      ],
+      "outputs": [
+        { "label": "Resistance", "unit": "Ω", "kind": "any", "formula": "R" },
+        { "label": "Resistance", "unit": "mΩ", "kind": "any", "formula": "R*1e3" }
+      ]
+    },
+    {
+      "id": "wire-drop",
+      "name": "Cable voltage drop and loss",
+      "description": "Voltage drop and dissipated power in a single conductor carrying current.",
+      "inputs": [
+        { "key": "rho", "label": "Material", "options": [[1.68e-8, "Copper"], [2.82e-8, "Aluminium"], [1.59e-8, "Silver"], [2.44e-8, "Gold"]], "default": 1.68e-8 },
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "L", "label": "Cable length (one way)", "unit": "m", "kind": "L", "default": 20 },
+        { "key": "A", "label": "Cross section", "unit": "mm²", "kind": "any", "default": 2.5 }
+      ],
+      "vars": [
+        { "name": "R", "formula": "rho*L/(A*1e-6)" }
+      ],
+      "outputs": [
+        { "label": "Conductor resistance", "unit": "Ω", "kind": "any", "formula": "R" },
+        { "label": "Voltage drop (one way)", "unit": "V", "kind": "any", "formula": "I*R" },
+        { "label": "Voltage drop (loop)", "unit": "V", "kind": "any", "formula": "2*I*R" },
+        { "label": "Power loss", "unit": "W", "kind": "any", "formula": "I^2*R" }
+      ]
+    },
+    {
+      "id": "drift-velocity",
+      "name": "Electron drift velocity",
+      "description": "Drift speed of charge carriers in a conductor.",
+      "inputs": [
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 1 },
+        { "key": "A", "label": "Cross section", "unit": "mm²", "kind": "any", "default": 1 },
+        { "key": "n", "label": "Carrier density", "options": [[8.5e28, "Copper"], [6.0e28, "Aluminium"], [5.86e28, "Silver"], [1.0e22, "Doped semiconductor"]], "default": 8.5e28 }
+      ],
+      "outputs": [
+        { "label": "Drift velocity", "unit": "µm/s", "kind": "any", "formula": "I/(n*1.602176634e-19*A*1e-6)*1e6" },
+        { "label": "Drift velocity", "unit": "mm/s", "kind": "any", "formula": "I/(n*1.602176634e-19*A*1e-6)*1e3" }
+      ]
+    },
+    {
+      "id": "current-density",
+      "name": "Current density",
+      "description": "Current per unit area in a conductor.",
+      "inputs": [
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "A", "label": "Cross section", "unit": "mm²", "kind": "any", "default": 2.5 }
+      ],
+      "outputs": [
+        { "label": "Current density", "unit": "A/mm²", "kind": "any", "formula": "I/A" },
+        { "label": "Current density", "unit": "A/m²", "kind": "any", "formula": "I/(A*1e-6)" }
+      ]
+    },
+    {
+      "id": "conductivity",
+      "name": "Resistivity ↔ conductivity",
+      "description": "Convert electrical resistivity to conductivity.",
+      "inputs": [
+        { "key": "rho", "label": "Resistivity", "unit": "nΩ·m", "kind": "any", "default": 16.8 }
+      ],
+      "outputs": [
+        { "label": "Conductivity", "unit": "MS/m", "kind": "any", "formula": "1000/rho" },
+        { "label": "Resistivity", "unit": "Ω·m", "kind": "any", "formula": "rho*1e-9" }
+      ]
+    },
+    {
+      "id": "temp-coefficient",
+      "name": "Resistance vs temperature",
+      "description": "Resistance change using the linear temperature coefficient.",
+      "inputs": [
+        { "key": "R0", "label": "Resistance at T0", "unit": "Ω", "kind": "any", "default": 100 },
+        { "key": "alpha", "label": "Material", "options": [[0.00393, "Copper"], [0.0039, "Aluminium"], [0.0038, "Silver"], [0.0005, "Nichrome"], [0.00045, "Carbon"]], "default": 0.00393 },
+        { "key": "dT", "label": "Temperature rise", "unit": "K", "kind": "any", "default": 50 }
+      ],
+      "outputs": [
+        { "label": "Resistance at new temperature", "unit": "Ω", "kind": "any", "formula": "R0*(1+alpha*dT)" },
+        { "label": "Change", "unit": "Ω", "kind": "any", "formula": "R0*alpha*dT" }
+      ]
+    },
+    {
+      "id": "joule-heating",
+      "name": "Joule heating",
+      "description": "Power dissipated and energy released by current through a resistor.",
+      "inputs": [
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 5 },
+        { "key": "R", "label": "Resistance", "unit": "Ω", "kind": "any", "default": 10 },
+        { "key": "t", "label": "Time", "unit": "s", "kind": "any", "default": 60 }
+      ],
+      "vars": [
+        { "name": "P", "formula": "I^2*R" }
+      ],
+      "outputs": [
+        { "label": "Power", "unit": "W", "kind": "any", "formula": "P" },
+        { "label": "Energy", "unit": "J", "kind": "any", "formula": "P*t" },
+        { "label": "Energy", "unit": "kWh", "kind": "any", "formula": "P*t/3.6e6" }
+      ]
+    },
+    {
+      "id": "battery-internal",
+      "name": "Battery with internal resistance",
+      "description": "Terminal voltage, internal loss and delivered power of a real battery.",
+      "inputs": [
+        { "key": "emf", "label": "EMF", "unit": "V", "kind": "any", "default": 12 },
+        { "key": "r", "label": "Internal resistance", "unit": "Ω", "kind": "any", "default": 0.5 },
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 2 }
+      ],
+      "vars": [
+        { "name": "Vt", "formula": "emf-I*r" }
+      ],
+      "outputs": [
+        { "label": "Terminal voltage", "unit": "V", "kind": "any", "formula": "Vt" },
+        { "label": "Internal loss", "unit": "W", "kind": "any", "formula": "I^2*r" },
+        { "label": "Delivered power", "unit": "W", "kind": "any", "formula": "Vt*I" }
+      ]
+    },
+    {
+      "id": "work-charge",
+      "name": "Work moving a charge",
+      "description": "Work done / energy gained moving a charge through a potential difference.",
+      "inputs": [
+        { "key": "q", "label": "Charge", "unit": "µC", "kind": "any", "default": 1 },
+        { "key": "V", "label": "Potential difference", "unit": "V", "kind": "any", "default": 1000 }
+      ],
+      "outputs": [
+        { "label": "Work", "unit": "µJ", "kind": "any", "formula": "q*V" },
+        { "label": "Work", "unit": "mJ", "kind": "any", "formula": "q*V*1e-3" }
+      ]
+    },
+    {
+      "id": "gauss-flux",
+      "name": "Electric flux through a surface",
+      "description": "Flux of a uniform field through a flat area at an angle.",
+      "inputs": [
+        { "key": "E", "label": "Field strength", "unit": "kV/m", "kind": "any", "default": 10 },
+        { "key": "A", "label": "Area", "unit": "cm²", "kind": "any", "default": 100 },
+        { "key": "th", "label": "Angle to normal", "unit": "°", "kind": "any", "default": 0 }
+      ],
+      "outputs": [
+        { "label": "Electric flux", "unit": "N·m²/C", "kind": "any", "formula": "E*1e3*(A*1e-4)*cos(th*pi/180)" }
+      ]
+    },
+    {
+      "id": "line-charge",
+      "name": "Field of an infinite line charge",
+      "description": "Radial electric field around an infinitely long charged line.",
+      "inputs": [
+        { "key": "lam", "label": "Linear charge density", "unit": "nC/m", "kind": "any", "default": 10 },
+        { "key": "r", "label": "Radial distance", "unit": "cm", "kind": "L", "default": 5 }
+      ],
+      "outputs": [
+        { "label": "Field strength", "unit": "kV/m", "kind": "any", "formula": "lam*1e-9/(2*pi*8.8541878128e-12*(r*0.01))*1e-3" }
+      ]
+    },
+    {
+      "id": "sheet-charge",
+      "name": "Field of an infinite charged sheet",
+      "description": "Uniform field produced by an infinite sheet of charge.",
+      "inputs": [
+        { "key": "sig", "label": "Surface charge density", "unit": "nC/m²", "kind": "any", "default": 10 }
+      ],
+      "outputs": [
+        { "label": "Field strength", "unit": "kV/m", "kind": "any", "formula": "sig*1e-9/(2*8.8541878128e-12)*1e-3" }
+      ]
+    },
+    {
+      "id": "b-wire",
+      "name": "Magnetic field of a long straight wire",
+      "description": "Field at distance r from a long straight current-carrying wire.",
+      "inputs": [
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "r", "label": "Distance", "unit": "cm", "kind": "L", "default": 5 }
+      ],
+      "outputs": [
+        { "label": "Flux density", "unit": "µT", "kind": "any", "formula": "1.25663706212e-6*I/(2*pi*(r*0.01))*1e6" },
+        { "label": "Flux density", "unit": "mT", "kind": "any", "formula": "1.25663706212e-6*I/(2*pi*(r*0.01))*1e3" }
+      ]
+    },
+    {
+      "id": "b-loop",
+      "name": "Field at the centre of a current loop",
+      "description": "Magnetic flux density at the centre of a circular loop of radius R.",
+      "inputs": [
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "R", "label": "Loop radius", "unit": "cm", "kind": "L", "default": 5 }
+      ],
+      "outputs": [
+        { "label": "Flux density", "unit": "µT", "kind": "any", "formula": "1.25663706212e-6*I/(2*(R*0.01))*1e6" },
+        { "label": "Flux density", "unit": "mT", "kind": "any", "formula": "1.25663706212e-6*I/(2*(R*0.01))*1e3" }
+      ]
+    },
+    {
+      "id": "b-solenoid",
+      "name": "Field inside a solenoid",
+      "description": "Magnetic flux density inside a long solenoid, optionally with a magnetic core.",
+      "inputs": [
+        { "key": "N", "label": "Number of turns", "unit": "turns", "kind": "any", "default": 500 },
+        { "key": "L", "label": "Solenoid length", "unit": "cm", "kind": "L", "default": 10 },
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 1 },
+        { "key": "mur", "label": "Core", "options": [[1, "Air / vacuum"], [200, "Soft iron (approx.)"], [1000, "Ferrite"], [5000, "Iron alloy"]], "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Flux density", "unit": "mT", "kind": "any", "formula": "1.25663706212e-6*mur*N*I/(L*0.01)*1e3" },
+        { "label": "Turns per metre", "unit": "1/m", "kind": "any", "formula": "N/(L*0.01)" }
+      ]
+    },
+    {
+      "id": "b-toroid",
+      "name": "Field inside a toroid",
+      "description": "Magnetic flux density inside a toroidal coil at mean radius r.",
+      "inputs": [
+        { "key": "N", "label": "Number of turns", "unit": "turns", "kind": "any", "default": 500 },
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 1 },
+        { "key": "r", "label": "Mean radius", "unit": "cm", "kind": "L", "default": 5 },
+        { "key": "mur", "label": "Core", "options": [[1, "Air / vacuum"], [1000, "Ferrite"], [5000, "Iron alloy"]], "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Flux density", "unit": "mT", "kind": "any", "formula": "1.25663706212e-6*mur*N*I/(2*pi*(r*0.01))*1e3" }
+      ]
+    },
+    {
+      "id": "force-wire",
+      "name": "Force on a current-carrying wire",
+      "description": "Magnetic force on a straight wire in a uniform field.",
+      "inputs": [
+        { "key": "B", "label": "Flux density", "unit": "T", "kind": "any", "default": 0.5 },
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "L", "label": "Length in field", "unit": "m", "kind": "L", "default": 0.2 },
+        { "key": "th", "label": "Angle to field", "unit": "°", "kind": "any", "default": 90 }
+      ],
+      "outputs": [
+        { "label": "Force", "unit": "N", "kind": "any", "formula": "B*I*L*sin(th*pi/180)" },
+        { "label": "Force", "unit": "mN", "kind": "any", "formula": "B*I*L*sin(th*pi/180)*1e3" }
+      ]
+    },
+    {
+      "id": "lorentz-force",
+      "name": "Lorentz force on a moving charge",
+      "description": "Magnetic part of the Lorentz force on a charge moving through a field.",
+      "inputs": [
+        { "key": "q", "label": "Charge", "unit": "µC", "kind": "any", "default": 1 },
+        { "key": "v", "label": "Speed", "unit": "m/s", "kind": "any", "default": 1000 },
+        { "key": "B", "label": "Flux density", "unit": "T", "kind": "any", "default": 0.1 },
+        { "key": "th", "label": "Angle between v and B", "unit": "°", "kind": "any", "default": 90 }
+      ],
+      "outputs": [
+        { "label": "Force", "unit": "nN", "kind": "any", "formula": "q*1e-6*v*B*sin(th*pi/180)*1e9" },
+        { "label": "Force", "unit": "µN", "kind": "any", "formula": "q*1e-6*v*B*sin(th*pi/180)*1e6" }
+      ]
+    },
+    {
+      "id": "parallel-wires",
+      "name": "Force between two parallel wires",
+      "description": "Force per unit length between two parallel currents.",
+      "inputs": [
+        { "key": "I1", "label": "Current 1", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "I2", "label": "Current 2", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "d", "label": "Separation", "unit": "cm", "kind": "L", "default": 5 }
+      ],
+      "outputs": [
+        { "label": "Force per metre", "unit": "mN/m", "kind": "any", "formula": "1.25663706212e-6*I1*I2/(2*pi*(d*0.01))*1e3" }
+      ]
+    },
+    {
+      "id": "dipole-torque",
+      "name": "Torque on an electric dipole",
+      "description": "Torque on an electric dipole in a uniform field.",
+      "inputs": [
+        { "key": "p", "label": "Dipole moment", "unit": "nC·m", "kind": "any", "default": 10 },
+        { "key": "E", "label": "Field strength", "unit": "kV/m", "kind": "any", "default": 100 },
+        { "key": "th", "label": "Angle to field", "unit": "°", "kind": "any", "default": 90 }
+      ],
+      "outputs": [
+        { "label": "Torque", "unit": "µN·m", "kind": "any", "formula": "p*E*sin(th*pi/180)" },
+        { "label": "Potential energy", "unit": "µJ", "kind": "any", "formula": "-p*E*cos(th*pi/180)" }
+      ]
+    },
+    {
+      "id": "magnetic-flux",
+      "name": "Magnetic flux through an area",
+      "description": "Flux of a uniform field through a flat area at an angle.",
+      "inputs": [
+        { "key": "B", "label": "Flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "A", "label": "Area", "unit": "cm²", "kind": "any", "default": 100 },
+        { "key": "th", "label": "Angle to normal", "unit": "°", "kind": "any", "default": 0 }
+      ],
+      "outputs": [
+        { "label": "Flux", "unit": "mWb", "kind": "any", "formula": "B*(A*1e-4)*cos(th*pi/180)*1e3" },
+        { "label": "Flux", "unit": "Wb", "kind": "any", "formula": "B*(A*1e-4)*cos(th*pi/180)" }
+      ]
+    },
+    {
+      "id": "faraday-emf",
+      "name": "Faraday induced EMF",
+      "description": "Average EMF induced in a coil by a change of flux.",
+      "inputs": [
+        { "key": "N", "label": "Number of turns", "unit": "turns", "kind": "any", "default": 100 },
+        { "key": "phi1", "label": "Initial flux", "unit": "mWb", "kind": "any", "default": 0 },
+        { "key": "phi2", "label": "Final flux", "unit": "mWb", "kind": "any", "default": 5 },
+        { "key": "dt", "label": "Time interval", "unit": "ms", "kind": "any", "default": 100 }
+      ],
+      "outputs": [
+        { "label": "EMF magnitude", "unit": "V", "kind": "any", "formula": "abs(-N*(phi2-phi1)/dt)" },
+        { "label": "Flux change", "unit": "mWb", "kind": "any", "formula": "phi2-phi1" }
+      ]
+    },
+    {
+      "id": "motional-emf",
+      "name": "Motional EMF",
+      "description": "EMF induced in a conductor of length L moving at speed v through a field B.",
+      "inputs": [
+        { "key": "B", "label": "Flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "L", "label": "Conductor length", "unit": "m", "kind": "L", "default": 0.5 },
+        { "key": "v", "label": "Speed", "unit": "m/s", "kind": "any", "default": 2 }
+      ],
+      "outputs": [
+        { "label": "EMF", "unit": "V", "kind": "any", "formula": "B*L*v" }
+      ]
+    },
+    {
+      "id": "solenoid-inductance",
+      "name": "Solenoid inductance",
+      "description": "Inductance of a long solenoid with N turns, area A and length l.",
+      "inputs": [
+        { "key": "N", "label": "Number of turns", "unit": "turns", "kind": "any", "default": 500 },
+        { "key": "A", "label": "Cross section", "unit": "cm²", "kind": "any", "default": 1 },
+        { "key": "l", "label": "Length", "unit": "cm", "kind": "L", "default": 10 },
+        { "key": "mur", "label": "Core", "options": [[1, "Air / vacuum"], [200, "Soft iron (approx.)"], [1000, "Ferrite"], [5000, "Iron alloy"]], "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Inductance", "unit": "mH", "kind": "any", "formula": "1.25663706212e-6*mur*N^2*(A*1e-4)/(l*0.01)*1e3" },
+        { "label": "Inductance", "unit": "µH", "kind": "any", "formula": "1.25663706212e-6*mur*N^2*(A*1e-4)/(l*0.01)*1e6" }
+      ]
+    },
+    {
+      "id": "coax-inductance",
+      "name": "Coaxial cable inductance",
+      "description": "Inductance per unit length of a coaxial line with inner radius a and outer radius b.",
+      "inputs": [
+        { "key": "l", "label": "Length", "unit": "m", "kind": "L", "default": 1 },
+        { "key": "a", "label": "Inner radius a", "unit": "mm", "kind": "L", "default": 1 },
+        { "key": "b", "label": "Outer radius b", "unit": "mm", "kind": "L", "default": 5 },
+        { "key": "mur", "label": "Core", "options": [[1, "Air / vacuum"], [100, "Iron powder"], [1000, "Ferrite"]], "default": 1 }
+      ],
+      "vars": [
+        { "name": "L", "formula": "1.25663706212e-6*mur*l/(2*pi)*ln(b/a)" }
+      ],
+      "outputs": [
+        { "label": "Inductance", "unit": "µH", "kind": "any", "formula": "L*1e6" },
+        { "label": "Inductance per metre", "unit": "µH/m", "kind": "any", "formula": "L/l*1e6" }
+      ]
+    },
+    {
+      "id": "transformer",
+      "name": "Ideal transformer",
+      "description": "Secondary voltage and current of an ideal transformer.",
+      "inputs": [
+        { "key": "V1", "label": "Primary voltage", "unit": "V", "kind": "any", "default": 230 },
+        { "key": "I1", "label": "Primary current", "unit": "A", "kind": "any", "default": 1 },
+        { "key": "N1", "label": "Primary turns", "unit": "turns", "kind": "any", "default": 500 },
+        { "key": "N2", "label": "Secondary turns", "unit": "turns", "kind": "any", "default": 50 }
+      ],
+      "vars": [
+        { "name": "V2", "formula": "V1*N2/N1" }
+      ],
+      "outputs": [
+        { "label": "Secondary voltage", "unit": "V", "kind": "any", "formula": "V2" },
+        { "label": "Secondary current", "unit": "A", "kind": "any", "formula": "I1*N1/N2" },
+        { "label": "Apparent power", "unit": "VA", "kind": "any", "formula": "V1*I1" },
+        { "label": "Turns ratio", "unit": ":1", "kind": "any", "formula": "N1/N2" }
+      ]
+    },
+    {
+      "id": "ac-rms",
+      "name": "AC peak / RMS / average",
+      "description": "Conversions between peak, peak-to-peak, RMS and average for a sine wave.",
+      "inputs": [
+        { "key": "Vp", "label": "Peak voltage", "unit": "V", "kind": "any", "default": 325 }
+      ],
+      "outputs": [
+        { "label": "RMS voltage", "unit": "V", "kind": "any", "formula": "Vp/sqrt(2)" },
+        { "label": "Peak-to-peak", "unit": "V", "kind": "any", "formula": "2*Vp" },
+        { "label": "Average (rectified)", "unit": "V", "kind": "any", "formula": "2*Vp/pi" }
+      ]
+    },
+    {
+      "id": "ac-power",
+      "name": "AC power and power factor",
+      "description": "Real, reactive and apparent power for a sinusoidal AC load.",
+      "inputs": [
+        { "key": "V", "label": "RMS voltage", "unit": "V", "kind": "any", "default": 230 },
+        { "key": "I", "label": "RMS current", "unit": "A", "kind": "any", "default": 5 },
+        { "key": "phi", "label": "Phase angle", "unit": "°", "kind": "any", "default": 30 }
+      ],
+      "vars": [
+        { "name": "S", "formula": "V*I" }
+      ],
+      "outputs": [
+        { "label": "Apparent power", "unit": "VA", "kind": "any", "formula": "S" },
+        { "label": "Real power", "unit": "W", "kind": "any", "formula": "S*cos(phi*pi/180)" },
+        { "label": "Reactive power", "unit": "var", "kind": "any", "formula": "S*sin(phi*pi/180)" },
+        { "label": "Power factor", "unit": "", "kind": "any", "formula": "cos(phi*pi/180)" }
+      ]
+    },
+    {
+      "id": "three-phase",
+      "name": "Three-phase power",
+      "description": "Power of a balanced three-phase load from line voltage and line current.",
+      "inputs": [
+        { "key": "VL", "label": "Line voltage", "unit": "V", "kind": "any", "default": 400 },
+        { "key": "IL", "label": "Line current", "unit": "A", "kind": "any", "default": 10 },
+        { "key": "phi", "label": "Phase angle", "unit": "°", "kind": "any", "default": 30 }
+      ],
+      "vars": [
+        { "name": "S", "formula": "sqrt(3)*VL*IL" }
+      ],
+      "outputs": [
+        { "label": "Apparent power", "unit": "VA", "kind": "any", "formula": "S" },
+        { "label": "Real power", "unit": "W", "kind": "any", "formula": "S*cos(phi*pi/180)" },
+        { "label": "Reactive power", "unit": "var", "kind": "any", "formula": "S*sin(phi*pi/180)" }
+      ]
+    },
+    {
+      "id": "energy-cost",
+      "name": "Energy consumption and cost",
+      "description": "Electrical energy used by a load and its cost.",
+      "inputs": [
+        { "key": "P", "label": "Power", "unit": "W", "kind": "any", "default": 2000 },
+        { "key": "h", "label": "Duration", "unit": "h", "kind": "any", "default": 3 },
+        { "key": "price", "label": "Price per kWh", "unit": "currency/kWh", "kind": "any", "default": 0.25 }
+      ],
+      "vars": [
+        { "name": "E", "formula": "P*h/1000" }
+      ],
+      "outputs": [
+        { "label": "Energy", "unit": "kWh", "kind": "any", "formula": "E" },
+        { "label": "Energy", "unit": "MJ", "kind": "any", "formula": "E*3.6" },
+        { "label": "Cost", "unit": "currency", "kind": "any", "formula": "E*price" }
+      ]
+    },
+    {
+      "id": "hall-voltage",
+      "name": "Hall voltage",
+      "description": "Hall voltage across a current-carrying plate in a magnetic field.",
+      "inputs": [
+        { "key": "I", "label": "Current", "unit": "A", "kind": "any", "default": 1 },
+        { "key": "B", "label": "Flux density", "unit": "T", "kind": "any", "default": 1 },
+        { "key": "t", "label": "Thickness", "unit": "mm", "kind": "L", "default": 1 },
+        { "key": "n", "label": "Carrier density", "options": [[8.5e28, "Copper"], [1e22, "Doped semiconductor"], [1e15, "Intrinsic semiconductor"]], "default": 8.5e28 }
+      ],
+      "outputs": [
+        { "label": "Hall voltage", "unit": "µV", "kind": "any", "formula": "I*B/(n*1.602176634e-19*(t*1e-3))*1e6" }
+      ]
+    },
+    {
+      "id": "em-wave",
+      "name": "EM wave wavelength and period",
+      "description": "Wavelength and period of an electromagnetic wave in vacuum.",
+      "inputs": [
+        { "key": "f", "label": "Frequency", "unit": "MHz", "kind": "any", "default": 100 }
+      ],
+      "vars": [
+        { "name": "lam", "formula": "2.99792458e8/(f*1e6)" }
+      ],
+      "outputs": [
+        { "label": "Wavelength", "unit": "m", "kind": "L", "formula": "lam" },
+        { "label": "Wavelength", "unit": "cm", "kind": "L", "formula": "lam*100" },
+        { "label": "Period", "unit": "ns", "kind": "any", "formula": "1/(f*1e6)*1e9" },
+        { "label": "Angular frequency", "unit": "rad/s", "kind": "any", "formula": "2*pi*f*1e6" }
+      ]
+    },
+    {
+      "id": "em-intensity",
+      "name": "EM wave intensity",
+      "description": "Intensity and radiation pressure of a plane electromagnetic wave.",
+      "inputs": [
+        { "key": "E0", "label": "Peak electric field", "unit": "V/m", "kind": "any", "default": 100 }
+      ],
+      "vars": [
+        { "name": "I", "formula": "0.5*8.8541878128e-12*2.99792458e8*E0^2" }
+      ],
+      "outputs": [
+        { "label": "Intensity", "unit": "W/m²", "kind": "any", "formula": "I" },
+        { "label": "Peak magnetic field", "unit": "µT", "kind": "any", "formula": "E0/2.99792458e8*1e6" },
+        { "label": "Radiation pressure (absorbing)", "unit": "µPa", "kind": "any", "formula": "I/2.99792458e8*1e6" },
+        { "label": "Radiation pressure (reflecting)", "unit": "µPa", "kind": "any", "formula": "2*I/2.99792458e8*1e6" }
+      ]
+    },
+    {
+      "id": "energy-density-e",
+      "name": "Electric field energy density",
+      "description": "Energy stored per unit volume in an electric field.",
+      "inputs": [
+        { "key": "E", "label": "Field strength", "unit": "kV/m", "kind": "any", "default": 100 },
+        { "key": "er", "label": "Medium", "options": [[1, "Air / vacuum"], [2.2, "PTFE"], [4.7, "FR4"], [80, "Water"]], "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Energy density", "unit": "mJ/m³", "kind": "any", "formula": "0.5*8.8541878128e-12*er*(E*1e3)^2*1e3" },
+        { "label": "Energy density", "unit": "J/m³", "kind": "any", "formula": "0.5*8.8541878128e-12*er*(E*1e3)^2" }
+      ]
+    },
+    {
+      "id": "energy-density-b",
+      "name": "Magnetic field energy density",
+      "description": "Energy stored per unit volume in a magnetic field.",
+      "inputs": [
+        { "key": "B", "label": "Flux density", "unit": "mT", "kind": "any", "default": 100 }
+      ],
+      "outputs": [
+        { "label": "Energy density", "unit": "J/m³", "kind": "any", "formula": "(B*1e-3)^2/(2*1.25663706212e-6)" },
+        { "label": "Energy density", "unit": "kJ/m³", "kind": "any", "formula": "(B*1e-3)^2/(2*1.25663706212e-6)*1e-3" }
+      ]
+    },
+    {
+      "id": "skin-depth",
+      "name": "Skin depth",
+      "description": "Depth at which current density falls to 1/e in a conductor.",
+      "inputs": [
+        { "key": "rho", "label": "Resistivity", "unit": "nΩ·m", "kind": "any", "default": 16.8 },
+        { "key": "f", "label": "Frequency", "unit": "kHz", "kind": "any", "default": 1 },
+        { "key": "mur", "label": "Permeability", "options": [[1, "Non-magnetic"], [100, "Iron powder"], [1000, "Ferrite"]], "default": 1 }
+      ],
+      "outputs": [
+        { "label": "Skin depth", "unit": "mm", "kind": "L", "formula": "sqrt(rho*1e-9/(pi*f*1e3*1.25663706212e-6*mur))*1e3" },
+        { "label": "Skin depth", "unit": "µm", "kind": "L", "formula": "sqrt(rho*1e-9/(pi*f*1e3*1.25663706212e-6*mur))*1e6" }
+      ]
+    }
+  ]
+}
